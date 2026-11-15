@@ -6,7 +6,8 @@ My mods for Bitwig Studio. Mod authors keep their mods in their own repos, and [
 | --- | --- |
 | [Piano Roll: Scale Fold](scale-fold/README.md) | A compact note grid that shows every pitch in the current scale. |
 | [Piano Roll: Step Sequencer](step-sequencer/README.md) | A sixteenth-note grid for drawing steps and editing note parameters. |
-| [Piano Roll: Note Intervals](note-intervals/README.md) | Assign shortcuts to transpose notes by a fifth or copy them a fifth or an octave away. |
+| [Piano Roll: Note Intervals](note-intervals/README.md) | Assign shortcuts to transpose or duplicate selected notes at intervals. |
+| [Piano Roll: Chord Tools](chord-tools/README.md) | Assign shortcuts for chord inversions, voicings, and chord quality. |
 | [Inspector: Repitch Transpose](repitch-transpose/README.md) | Semitone controls for a single Repitch audio event in the Inspector. |
 | [Browser: Remember Live Preview](popup-live-preview/README.md) | A saved Live Preview choice or a fixed starting state for the Pop-up Browser. |
 

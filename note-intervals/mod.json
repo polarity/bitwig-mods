@@ -4,9 +4,9 @@
     "id": "note-intervals",
     "name": "Piano Roll: Note Intervals",
     "area": "Piano Roll",
-    "version": "0.1.0-dev.1",
+    "version": "0.1.0-dev.8",
     "author": "Polarity",
-    "description": "Assign shortcuts to transpose selected notes by a fifth or copy them in place a fifth or an octave away.",
+    "description": "Assign shortcuts to transpose or duplicate selected notes at fixed or custom intervals.",
     "documentation": "readme"
   },
   "built_against": {

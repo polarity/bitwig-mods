@@ -14,6 +14,8 @@ import java.util.Map;
 import java.util.Set;
 
 final class IntervalEdit {
+    private static final Comparator<Note> BY_KEY = Comparator.comparingInt(Note::key);
+
     private record Lane(int channel, int key) {}
 
     private IntervalEdit() {}
@@ -23,8 +25,7 @@ final class IntervalEdit {
         List<Note> sources = new ArrayList<>(selected);
         if (!duplicate) {
             // Move the leading notes first so they vacate lanes that other selected notes need.
-            Comparator<Note> byKey = Comparator.comparingInt(Note::key);
-            sources.sort(semitones > 0 ? byKey.reversed() : byKey);
+            sources.sort(semitones > 0 ? BY_KEY.reversed() : BY_KEY);
         }
 
         Set<Note> moving = duplicate ? Set.of() : selected;
@@ -44,9 +45,8 @@ final class IntervalEdit {
             }
 
             Map<Lane, List<Note>> occupied = occupiedByClip.computeIfAbsent(clip, c -> occupiedLanes(c, moving));
-            Lane destination = new Lane(note.channel(), key);
-            List<Note> lane = occupied.computeIfAbsent(destination, ignored -> new ArrayList<>());
-            if (lane.stream().anyMatch(other -> note.start() < other.end() && other.start() < note.end())) {
+            List<Note> lane = laneAt(occupied, note.channel(), key);
+            if (overlaps(note, lane)) {
                 if (duplicate) {
                     continue;
                 }
@@ -64,12 +64,19 @@ final class IntervalEdit {
         return edit;
     }
 
+    private static boolean overlaps(Note note, List<Note> lane) {
+        return lane.stream().anyMatch(other -> note.start() < other.end() && other.start() < note.end());
+    }
+
+    private static List<Note> laneAt(Map<Lane, List<Note>> occupied, int channel, int key) {
+        return occupied.computeIfAbsent(new Lane(channel, key), ignored -> new ArrayList<>());
+    }
+
     private static Map<Lane, List<Note>> occupiedLanes(Clip clip, Set<Note> moving) {
         Map<Lane, List<Note>> occupied = new HashMap<>();
         for (Note note : clip.notesBetween(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY)) {
             if (!moving.contains(note)) {
-                Lane lane = new Lane(note.channel(), note.key());
-                occupied.computeIfAbsent(lane, ignored -> new ArrayList<>()).add(note);
+                laneAt(occupied, note.channel(), note.key()).add(note);
             }
         }
         return occupied;

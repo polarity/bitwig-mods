@@ -1,0 +1,33 @@
+{
+  "manifest_version": 2,
+  "mod": {
+    "id": "chord-tools",
+    "name": "Piano Roll: Chord Tools",
+    "area": "Piano Roll",
+    "version": "0.1.0-dev.1",
+    "author": "Polarity",
+    "description": "Assign shortcuts to rotate chord inversions, open or close voicings, and change chord quality.",
+    "documentation": "readme"
+  },
+  "built_against": {
+    "bitwig_version": "6.1.7",
+    "platform": "windows",
+    "architecture": "x64"
+  },
+  "requires": [
+    { "id": "action-menu-composition-framework", "min_version": "0.8.0-dev.1" },
+    { "id": "notifications-framework", "min_version": "0.3.0-dev.1" },
+    { "id": "piano-roll-framework", "min_version": "0.2.0-dev.1" }
+  ],
+  "resources": {
+    "readme": { "kind": "file", "path": "README.md", "media_type": "text/markdown" }
+  },
+  "registrations": [
+    {
+      "id": "actions",
+      "consumer": "action-menu-composition-framework",
+      "descriptor": "actions.properties",
+      "jar": "helper.jar"
+    }
+  ]
+}
