@@ -21,6 +21,8 @@ To build Repitch Transpose, pass `--mod repitch-transpose` and point `--bitwig-b
 
 To build Remember Live Preview, pass `--mod popup-live-preview` and use stock Bitwig Studio 6.1.7 and Settings Framework 1.0.0.
 
+To build Note Intervals, pass `--mod note-intervals` and use stock Bitwig Studio 6.1.7. The bundle must contain the Actions and Menus, Notifications, and Piano Roll framework versions listed in [build.json](../note-intervals/build.json).
+
 The builder generates one versioned ZIP per mod in `dist/`. Use `--out` to choose a fresh folder for a repeat build. Each ZIP includes the compiled helper, generated manifest, sources and checksums. Use **Mods → Add Mod…** in Patchbay to import the ZIP.
 
 ## Installing or replacing tester builds

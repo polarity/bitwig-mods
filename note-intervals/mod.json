@@ -1,0 +1,33 @@
+{
+  "manifest_version": 2,
+  "mod": {
+    "id": "note-intervals",
+    "name": "Piano Roll: Note Intervals",
+    "area": "Piano Roll",
+    "version": "0.1.0-dev.1",
+    "author": "Polarity",
+    "description": "Assign shortcuts to transpose selected notes by a fifth or copy them in place a fifth or an octave away.",
+    "documentation": "readme"
+  },
+  "built_against": {
+    "bitwig_version": "6.1.7",
+    "platform": "windows",
+    "architecture": "x64"
+  },
+  "requires": [
+    { "id": "action-menu-composition-framework", "min_version": "0.8.0-dev.1" },
+    { "id": "notifications-framework", "min_version": "0.3.0-dev.1" },
+    { "id": "piano-roll-framework", "min_version": "0.2.0-dev.1" }
+  ],
+  "resources": {
+    "readme": { "kind": "file", "path": "README.md", "media_type": "text/markdown" }
+  },
+  "registrations": [
+    {
+      "id": "actions",
+      "consumer": "action-menu-composition-framework",
+      "descriptor": "actions.properties",
+      "jar": "helper.jar"
+    }
+  ]
+}

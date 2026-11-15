@@ -17,7 +17,7 @@ def main():
     for option in ("patchbay-source", "patchbay-release", "bitwig-bin", "jdk-bin"):
         parser.add_argument("--" + option, required=True, type=Path)
     parser.add_argument("--out", type=Path, default=Path("dist"))
-    parser.add_argument("--mod", choices=(*PIANO_ROLL_MODS, "repitch-transpose", "popup-live-preview"))
+    parser.add_argument("--mod", choices=(*PIANO_ROLL_MODS, "repitch-transpose", "popup-live-preview", "note-intervals"))
     args = parser.parse_args()
     repo = Path(__file__).resolve().parent.parent
     source, release, bitwig, jdk, out = (
