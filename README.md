@@ -6,12 +6,13 @@ My mods for Bitwig Studio. Mod authors keep their mods in their own repos, and [
 | --- | --- |
 | [Piano Roll: Scale Fold](scale-fold/README.md) | A compact note grid that shows every pitch in the current scale. |
 | [Piano Roll: Step Sequencer](step-sequencer/README.md) | A sixteenth-note grid for drawing steps and editing note parameters. |
+| [Inspector: Repitch Transpose](repitch-transpose/README.md) | Semitone controls for a single Repitch audio event in the Inspector. |
 
 ## Install
 
 Grab the individual mod ZIPs from [Releases](https://github.com/polarity/bitwig-mods/releases). In Patchbay, use **Mods → Add Mod…**, pick the ZIPs, enable the mods, and click **Load**. Step Sequencer also needs **Framework: Piano Roll**.
 
-These tester builds passed import and offline preparation with [Patchbay 0.36.0-dev.14](https://github.com/shaboogen-dev/Patchbay/releases/tag/0.36.0-dev.14) and Bitwig Studio 6.1.3 on Windows x64. See the [release guide](docs/releasing.md) for build and upgrade details.
+The piano roll tester builds passed import and offline preparation with [Patchbay 0.36.0-dev.14](https://github.com/shaboogen-dev/Patchbay/releases/tag/0.36.0-dev.14) and Bitwig Studio 6.1.3 on Windows x64. Repitch Transpose targets Bitwig Studio 6.1.7 on Windows x64 and needs **Framework: Inspector**. See the [release guide](docs/releasing.md) for build and upgrade details.
 
 ## Devices
 

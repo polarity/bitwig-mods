@@ -1,0 +1,31 @@
+{
+  "manifest_version": 2,
+  "mod": {
+    "id": "repitch-transpose",
+    "name": "Inspector: Repitch Transpose",
+    "area": "Inspector",
+    "version": "0.1.0-dev.4",
+    "author": "Polarity",
+    "description": "Transpose a Repitch audio event by semitones from the Inspector. The transpose controls adjust the event's source tempo.",
+    "documentation": "readme"
+  },
+  "built_against": {
+    "bitwig_version": "6.1.7",
+    "platform": "windows",
+    "architecture": "x64"
+  },
+  "requires": [
+    { "id": "inspector-composition-framework", "min_version": "0.3.0-dev.2" }
+  ],
+  "resources": {
+    "readme": { "kind": "file", "path": "README.md", "media_type": "text/markdown" }
+  },
+  "registrations": [
+    {
+      "id": "inspector",
+      "consumer": "inspector-composition-framework",
+      "descriptor": "inspector-blocks.properties",
+      "jar": "helper.jar"
+    }
+  ]
+}

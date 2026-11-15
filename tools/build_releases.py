@@ -1,4 +1,4 @@
-"""Build both release ZIPs using Patchbay's SDK and a stock Bitwig 6.1.3 install."""
+"""Build release ZIPs using Patchbay's SDK and a stock Bitwig install."""
 
 import argparse
 import hashlib
@@ -9,11 +9,15 @@ import sys
 import tempfile
 
 
+PIANO_ROLL_MODS = ("scale-fold", "step-sequencer")
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     for option in ("patchbay-source", "patchbay-release", "bitwig-bin", "jdk-bin"):
         parser.add_argument("--" + option, required=True, type=Path)
     parser.add_argument("--out", type=Path, default=Path("dist"))
+    parser.add_argument("--mod", choices=(*PIANO_ROLL_MODS, "repitch-transpose"))
     args = parser.parse_args()
     repo = Path(__file__).resolve().parent.parent
     source, release, bitwig, jdk, out = (
@@ -22,28 +26,40 @@ def main():
             args.jdk_bin, args.out,
         )
     )
+    mods = (args.mod,) if args.mod else PIANO_ROLL_MODS
+    reference_build = None
+    framework_jars = {}
+    for mod in mods:
+        manifest = json.loads((repo / mod / "mod.json").read_text(encoding="utf-8"))
+        version = manifest["built_against"]["bitwig_version"]
+        if reference_build and version != reference_build:
+            parser.error("select --mod when the mods target different Bitwig versions")
+        reference_build = version
+        build = json.loads((repo / mod / "build.json").read_text(encoding="utf-8"))
+        for dependency in build.get("classpath_mods", []):
+            framework_id, expected_version = dependency.split("@", 1)
+            framework = release / "mods" / framework_id
+            actual_version = json.loads((framework / "mod.json").read_text(encoding="utf-8"))["mod"]["version"]
+            if actual_version != expected_version:
+                parser.error(f"{mod} expects {dependency}; the Patchbay bundle has {framework_id}@{actual_version}")
+            framework_jars[f"{framework_id}-{actual_version}.zip"] = framework / "helper.jar"
+
     kit = {name: release / "modkit" / name for name in ("bml-api.jar", "bml-modkit.jar")}
-    framework = release / "mods/piano-roll-framework"
-    map_info = json.loads((release / "maps/windows-6.1.3-map1/map.json").read_text(encoding="utf-8"))
+    map_info = json.loads((release / f"maps/windows-{reference_build}-map1/map.json").read_text(encoding="utf-8"))
     if hashlib.sha256((bitwig / "bitwig.jar").read_bytes()).hexdigest() != map_info["target_jar_sha256"]:
-        parser.error("--bitwig-bin must point to stock Bitwig Studio 6.1.3 on Windows")
-    framework_version = json.loads((framework / "mod.json").read_text(encoding="utf-8"))["mod"]["version"]
-    expected = f"piano-roll-framework@{framework_version}"
-    deps = json.loads((repo / "step-sequencer/build.json").read_text(encoding="utf-8"))["classpath_mods"]
-    if deps != [expected]:
-        parser.error(f"the step sequencer expects {deps[0]}; the Patchbay bundle has {expected}")
+        parser.error(f"--bitwig-bin must point to stock Bitwig Studio {reference_build} on Windows")
 
     with tempfile.TemporaryDirectory(prefix="polarity-mods-") as tmp:
         workspace = Path(tmp)
         (workspace / "workspace.json").write_text(
-            json.dumps({"mods": str(repo), "bitwig_jars": {"6.1.3": str(bitwig)}}), encoding="utf-8"
+            json.dumps({"mods": str(repo), "bitwig_jars": {reference_build: str(bitwig)}}), encoding="utf-8"
         )
         os.environ["BML_WORKSPACE"] = str(workspace)
         sys.path.insert(0, str(source / "tools"))
         import build_mod
 
         # Patchbay's builder pins the JDK to a local install and expects framework release ZIPs.
-        # Use the same compiler version and read the framework JAR from the tester bundle.
+        # Use the same compiler version and read the framework JARs from the tester bundle.
         build_mod.JDK = jdk
         build_mod.modkit.JDK = jdk
         build_mod.modkit.CACHE = workspace / "compile-cache"
@@ -51,12 +67,12 @@ def main():
         release_member = build_mod.release_member
 
         def read_release_member(path, name):
-            if path.name == f"piano-roll-framework-{framework_version}.zip" and name == "helper.jar":
-                return (framework / name).read_bytes()
+            if path.name in framework_jars and name == "helper.jar":
+                return framework_jars[path.name].read_bytes()
             return release_member(path, name)
 
         build_mod.release_member = read_release_member
-        for mod in ("scale-fold", "step-sequencer"):
+        for mod in mods:
             sys.argv = ["build_mod.py", mod, "--out", str(out)]
             result = build_mod.main()
             if result:
