@@ -3,7 +3,7 @@
   "mod": {
     "id": "step-sequencer",
     "name": "Piano Roll: Step Sequencer",
-    "version": "0.1.0-dev.5",
+    "version": "0.1.0-dev.6",
     "author": "Polarity",
     "description": "Adds a sixteenth-note grid with a playhead to the Detail Editor. Toggle or draw steps and drag set steps to edit velocity, offset, length, repeat, pitch, or chance.",
     "documentation": "readme"

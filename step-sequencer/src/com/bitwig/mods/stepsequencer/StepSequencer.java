@@ -43,12 +43,17 @@ public final class StepSequencer {
         return view;
     }
 
-    @Hook(target = aIL.class, method = "vhT(LDQJ;Lbjf;LaMi;Z)LaIL;", at = At.WRAP_RETURN)
-    public static aIL addStepsButton(@Return aIL modeButton) {
-        if (!(modeButton.tFJ().wvR() instanceof Shc)) {
-            return modeButton;
+    @Hook(target = FLM.class, method = "vhT(Lbjf;LDQJ;)Ldvm;", at = At.WRAP_RETURN)
+    public static dvm addStepsButton(@Return dvm widget) {
+        if (!(widget instanceof aIL modeButton) || !(modeButton.tFJ().wvR() instanceof Shc)
+                || modeButton.fQN() != 1) {
+            return widget;
         }
         try {
+            dvm nativeButton = modeButton.n_(0);
+            if (!(nativeButton instanceof dAi) && !(nativeButton instanceof dWx)) {
+                return widget;
+            }
             View view = view(modeButton.Dvd);
             dAi steps = dAi.WkC();
             dAi.vhT(steps.Cvo(), view.active);
@@ -60,22 +65,23 @@ public final class StepSequencer {
             steps.HEY(() -> view.toggle(modeButton));
             steps.E3I(new Vlw(22L));
 
-            dvm nativeButton = modeButton.n_(0);
             if (nativeButton instanceof dWx column) {
                 column.znu(steps); // Scale Fold already put Drum/Hybrid and Scale in a column.
-            } else {
-                dWx column = dWx.JQk(1);
-                column.xwW(0.0f);
-                nativeButton.E3I(new Vlw(22L));
-                modeButton.Xzi(nativeButton);
-                column.znu(nativeButton);
-                column.znu(steps);
-                modeButton.vhT(column);
+                return modeButton;
             }
+
+            // Keep the native button inside its single-child widget. The mode strip has
+            // not attached that widget yet, so it can be returned in a new column.
+            dWx column = dWx.JQk(1);
+            column.xwW(0.0f);
+            nativeButton.E3I(new Vlw(22L));
+            column.znu(steps);
+            column.k31(modeButton, 0);
+            return column;
         } catch (RuntimeException | LinkageError failure) {
             MOD.log("Could not add the Steps button", failure);
+            return widget;
         }
-        return modeButton;
     }
 
     @Hook(target = aMi.class, method = "E3I(LYot;Lbjf;LaZK;)V", at = At.BEFORE_RETURN)

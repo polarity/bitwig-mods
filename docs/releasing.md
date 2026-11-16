@@ -27,6 +27,12 @@ To build Note Intervals or Chord Tools, pass `--mod note-intervals` or `--mod ch
 
 The builder generates one versioned ZIP per mod in `dist/`. Use `--out` to choose a fresh folder for a repeat build. Each ZIP includes the compiled helper, generated manifest, sources and checksums. Use **Mods → Add Mod…** in Patchbay to import the ZIP.
 
+### Step Sequencer and Scale Fold preflight
+
+The release builder checks the compiled helpers for Bitwig's generic widget child-removal call. The old Step Sequencer hook used that call to move the Drum/Hybrid button and could leave it without a parent during layout. A matching call reports `PREFLIGHT_FAILED` with the method reference and stops the build before the ZIPs reach their final paths.
+
+The check uses the method name and descriptor for the Bitwig build named in `built_against`. If that reference changes, verify the corresponding native method before adding its signature in [the build script](../tools/build_releases.py). The check covers this removal call. Patchbay offline preparation and a live Detail Editor test remain part of the release workflow.
+
 ## Installing or replacing tester builds
 
 Leave the individual release packages zipped for import. GitHub's automatically generated **Source code** archive does not include the compiled helper JARs. If Patchbay offers to replace an existing copy, accept. If you installed a source folder under a different name, move it out of Patchbay's `mods` directory first.

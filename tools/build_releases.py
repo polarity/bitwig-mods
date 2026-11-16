@@ -7,9 +7,43 @@ import os
 from pathlib import Path
 import sys
 import tempfile
+from zipfile import ZipFile
 
 
 PIANO_ROLL_MODS = ("scale-fold", "step-sequencer")
+# Generic widget child removal can detach the native Drum/Hybrid button before
+# its single-child wrapper finishes updating (Step Sequencer 0.1.0-dev.5).
+WIDGET_CHILD_REMOVERS = {
+    "6.1.3": ("Xzi", "(Ldvm;)V"),
+    "6.1.7": ("neH", "(LdwF;)V"),
+}
+
+
+def preflight(mod, bitwig_version, package):
+    if mod not in PIANO_ROLL_MODS:
+        return
+
+    remover = WIDGET_CHILD_REMOVERS.get(bitwig_version)
+    if remover is None:
+        raise SystemExit(f"PREFLIGHT_FAILED {mod}: identify the widget child remover for Bitwig {bitwig_version}")
+
+    # Patchbay derives uses.tsv from the compiled helper, including method handles.
+    with ZipFile(package) as archive:
+        try:
+            uses = archive.read(f"{mod}/uses.tsv").decode("utf-8")
+        except KeyError:
+            raise SystemExit(f"PREFLIGHT_FAILED {mod}: package is missing uses.tsv") from None
+
+    for row in uses.splitlines():
+        parts = row.split("\t")
+        if parts[0] == "M" and tuple(parts[2:4]) == remover:
+            _, owner, name, descriptor, _ = parts
+            raise SystemExit(
+                f"PREFLIGHT_FAILED {mod}: {owner}.{name}{descriptor} can leave the Drum/Hybrid "
+                "button detached. Keep the native child in its wrapper and add the custom button "
+                "while building the mode strip."
+            )
+    print(f"PREFLIGHT_OK {mod}: no generic widget child removal")
 
 
 def main():
@@ -31,12 +65,17 @@ def main():
     mods = (args.mod,) if args.mod else PIANO_ROLL_MODS
     reference_build = None
     framework_jars = {}
+    packages = {}
     for mod in mods:
         manifest = json.loads((repo / mod / "mod.json").read_text(encoding="utf-8"))
         version = manifest["built_against"]["bitwig_version"]
         if reference_build and version != reference_build:
             parser.error("select --mod when the mods target different Bitwig versions")
         reference_build = version
+        package = out / f"{mod}-{manifest['mod']['version']}.zip"
+        if package.exists():
+            parser.error(f"{package} exists; choose a fresh --out to rebuild it")
+        packages[mod] = package
         build = json.loads((repo / mod / "build.json").read_text(encoding="utf-8"))
         for dependency in build.get("classpath_mods", []):
             framework_id, expected_version = dependency.split("@", 1)
@@ -74,11 +113,19 @@ def main():
             return release_member(path, name)
 
         build_mod.release_member = read_release_member
-        for mod in mods:
-            sys.argv = ["build_mod.py", mod, "--out", str(out)]
-            result = build_mod.main()
-            if result:
-                return result
+        out.mkdir(parents=True, exist_ok=True)
+        with tempfile.TemporaryDirectory(prefix=".build-", dir=out) as staging_dir:
+            staging = Path(staging_dir)
+            for mod, package in packages.items():
+                sys.argv = ["build_mod.py", mod, "--out", str(staging)]
+                result = build_mod.main()
+                if result:
+                    return result
+                preflight(mod, reference_build, staging / package.name)
+
+            for package in packages.values():
+                (staging / package.name).rename(package)
+                print(f"READY {package}")
     return 0
 
 
