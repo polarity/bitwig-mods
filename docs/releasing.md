@@ -5,7 +5,7 @@
 1. [Build the mod ZIP locally](#local-build), verify Patchbay import and offline preparation, and give the ZIP to Robert.
 2. Robert installs the ZIP through Patchbay and tests the mod in Bitwig. If a fix is needed, rebuild and send the updated ZIP for another test.
 3. After Robert confirms the build in Bitwig, check the
-   [Patchbay Launcher packaging contract](patchbay-launcher.md) and publish that
+   [shared Patchbay Launcher manifest](patchbay-launcher.md#mods) and publish that
    ZIP as an asset on the GitHub release.
 4. Draft a short English Discord announcement that explains what the mod does and links to the GitHub release.
 

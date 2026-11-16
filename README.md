@@ -19,7 +19,7 @@ The piano roll tester builds passed import and offline preparation with [Patchba
 
 ## Publishing and forks
 
-Follow the [Patchbay Launcher packaging contract](docs/patchbay-launcher.md)
+Follow the [shared Patchbay Launcher manifest](docs/patchbay-launcher.md#mods)
 for ZIP names, release assets, and adding a fork as a source.
 
 ## Devices
