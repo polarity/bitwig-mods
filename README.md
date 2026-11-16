@@ -1,6 +1,24 @@
 # Polarity's Bitwig Mods
 
-My mods for Bitwig Studio. Mod authors keep their mods in their own repos, and [Patchbay Mod Loader](https://github.com/shaboogen-dev/Patchbay) loads them when Bitwig starts.
+## Getting started
+
+- **Use the launcher.** On Windows and macOS, install Patchbay in the
+  unofficial Patchbay Launcher, then open **Mods** or **Devices** to pick
+  what to add. The launcher handles updates for Patchbay, mods, and devices.
+  [Download Patchbay Launcher](https://github.com/arius77R/patchbay-launcher/releases)
+- **Install manually.** Patchbay Mod Loader patches Bitwig at startup and
+  includes the frameworks that mods and devices use. Pick a release that
+  supports your Bitwig version and follow `INSTALL.md` in the ZIP.
+  [Download Patchbay](https://github.com/shaboogen-dev/Patchbay/releases)
+
+  - Get mod ZIPs from [Patchbay Mods](https://github.com/shaboogen-dev/Mods/releases).
+  - Get Polarity's mod ZIPs from [Bitwig Mods](https://github.com/polarity/bitwig-mods/releases).
+  - Get Polarity's devices and modulators from [Bitwig Devices](https://github.com/polarity/bitwig-devices#install).
+
+## What's in this repo
+
+My mods add tools and shortcuts to Bitwig Studio's piano roll, inspector, and
+pop-up browser.
 
 | Mod | What it adds |
 | --- | --- |
@@ -13,7 +31,7 @@ My mods for Bitwig Studio. Mod authors keep their mods in their own repos, and [
 
 ## Install
 
-Grab the individual mod ZIPs from [Releases](https://github.com/polarity/bitwig-mods/releases). In Patchbay, use **Mods → Add Mod…**, pick the ZIPs, enable the mods, and click **Load**. Step Sequencer also needs **Framework: Piano Roll**.
+For manual setup, grab the individual mod ZIPs from [Releases](https://github.com/polarity/bitwig-mods/releases). In Patchbay, use **Mods → Add Mod…**, pick the ZIPs, enable the mods, and click **Load**. Step Sequencer also needs **Framework: Piano Roll**.
 
 The piano roll tester builds passed import and offline preparation with [Patchbay 0.36.0-dev.14](https://github.com/shaboogen-dev/Patchbay/releases/tag/0.36.0-dev.14) and Bitwig Studio 6.1.3 on Windows x64. Repitch Transpose targets Bitwig Studio 6.1.7 on Windows x64 and needs **Framework: Inspector**. See the [release guide](docs/releasing.md) for build and upgrade details.
 
