@@ -17,6 +17,11 @@ Grab the individual mod ZIPs from [Releases](https://github.com/polarity/bitwig-
 
 The piano roll tester builds passed import and offline preparation with [Patchbay 0.36.0-dev.14](https://github.com/shaboogen-dev/Patchbay/releases/tag/0.36.0-dev.14) and Bitwig Studio 6.1.3 on Windows x64. Repitch Transpose targets Bitwig Studio 6.1.7 on Windows x64 and needs **Framework: Inspector**. See the [release guide](docs/releasing.md) for build and upgrade details.
 
+## Publishing and forks
+
+Follow the [Patchbay Launcher packaging contract](docs/patchbay-launcher.md)
+for ZIP names, release assets, and adding a fork as a source.
+
 ## Devices
 
 My native devices and modulators live in [bitwig-devices](https://github.com/polarity/bitwig-devices). Patchbay loads them through **Framework: Nitro Devices** (`custom-device-registrar`). To make your own, start with [Bitwig Device Blueprints](https://github.com/polarity/bitwig-devices-blueprint).
