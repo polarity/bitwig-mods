@@ -27,6 +27,7 @@ pop-up browser.
 | [Piano Roll: Note Intervals](note-intervals/README.md) | Assign shortcuts to transpose or duplicate selected notes at intervals. |
 | [Piano Roll: Chord Tools](chord-tools/README.md) | Assign shortcuts for chord inversions, voicings, and chord quality. |
 | [Inspector: Repitch Transpose](repitch-transpose/README.md) | Semitone controls for a single Repitch audio event in the Inspector. |
+| [Inspector: External Audio Editor](external-audio-editor/README.md) | Open an audio clip or event's original sample in a configurable external editor. |
 | [Browser: Remember Live Preview](popup-live-preview/README.md) | A saved Live Preview choice or a fixed starting state for the Pop-up Browser. |
 
 ## Install

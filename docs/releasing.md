@@ -23,6 +23,24 @@ To build Repitch Transpose, pass `--mod repitch-transpose` and point `--bitwig-b
 
 To build Remember Live Preview, pass `--mod popup-live-preview` and use stock Bitwig Studio 6.1.7 and Settings Framework 1.0.0.
 
+To build External Audio Editor, pass `--mod external-audio-editor` and use stock
+Bitwig Studio 6.1.7 with Patchbay 0.36.0-dev.16. Its build file pins Inspector,
+Settings and Notifications. Run the standalone command/source tests with JDK 21+
+by compiling `EditorCommand.java`, `SourceFiles.java` and `test/EditorCommandTest.java`
+from the mod directory into a temporary class directory, then run
+`com.bitwig.mods.externalaudio.EditorCommandTest`. On Windows, compile
+`test/EditorProbe.cs` as an executable with the .NET C# compiler and pass its full
+path to the test to also verify a real process receives an unchanged sample path.
+
+For External Audio Editor dialog changes, also compile `DialogProcess.java` and
+`test/DialogProcessTest.java` into a temporary class directory. Extract the built
+`helper.jar` from the ZIP. Run `com.bitwig.mods.externalaudio.DialogProcessTest`
+with Bitwig's bundled Java, `-Djava.awt.headless=true`, and arguments `<helper.jar>
+<existing-editor-executable>`. Click **Save** in the child dialog and expect
+`DIALOG_PROCESS_TEST_OK save parent=headless`. Repeat with `cancel` as the third
+argument and close the dialog. It must report `cancel parent=headless`. Bitwig's
+headless process must never create an AWT/Swing window itself.
+
 To build Note Intervals or Chord Tools, pass `--mod note-intervals` or `--mod chord-tools`, respectively. Use stock Bitwig Studio 6.1.7 and the [Patchbay 0.36.0-dev.16 Windows bundle](https://github.com/shaboogen-dev/Patchbay/releases/tag/0.36.0-dev.16). Each mod declares its framework versions in its build file. [Note Intervals](../note-intervals/build.json) · [Chord Tools](../chord-tools/build.json)
 
 The builder generates one versioned ZIP per mod in `dist/`. Use `--out` to choose a fresh folder for a repeat build. Each ZIP includes the compiled helper, generated manifest, sources and checksums. Use **Mods → Add Mod…** in Patchbay to import the ZIP.
