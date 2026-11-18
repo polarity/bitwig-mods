@@ -7,13 +7,13 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Stream;
 
-import bitwig.obf.BVS; // a clip/pattern whose content is a stream of timeline events (6.1.7)
-import bitwig.obf.DyF; // an audio timeline event containing sample regions
-import bitwig.obf.aJf; // common Arranger/Launcher Clip Inspector
-import bitwig.obf.aMo; // audio-event Inspector (also used for MIDI notes)
-import bitwig.obf.dBz; // native push button
-import bitwig.obf.dXL; // native widget group
-import bitwig.obf.poA; // audio sample region
+import bitwig.obf.Ob; // a clip/pattern whose content is a stream of timeline events (6.1.4)
+import bitwig.obf.TWN; // an audio timeline event containing sample regions
+import bitwig.obf.aHZ; // common Arranger/Launcher Clip Inspector
+import bitwig.obf.aLn; // audio-event Inspector (also used for MIDI notes)
+import bitwig.obf.dAa; // native push button
+import bitwig.obf.dWb; // native widget group
+import bitwig.obf.ocL; // audio sample region
 import bml.api.Bml;
 import bml.inspector.Blocks;
 import bml.inspector.BuiltBlock;
@@ -31,34 +31,34 @@ public final class ExternalAudioEditor implements InspectorProvider {
     }
 
     private static void addButton(BuiltBlock block) {
-        if (!block.bitwigBlock() || !(block.widget() instanceof dXL body)) return;
-        if (block.panel() instanceof aMo panel) {
-            if (!panel.UIe().BBg() || !block.title().equals(String.valueOf(panel.XzC().getValue()))) return;
-        } else if (block.panel() instanceof aJf panel) {
+        if (!block.bitwigBlock() || !(block.widget() instanceof dWb body)) return;
+        if (block.panel() instanceof aLn panel) {
+            if (!panel.Vr().IwV() || !block.title().equals(String.valueOf(panel.ifN().getValue()))) return;
+        } else if (block.panel() instanceof aHZ panel) {
             if (block.context() != Context.ARRANGER_CLIP && block.context() != Context.LAUNCHER_CLIP) return;
-            if (!block.title().equals(String.valueOf(panel.XzC().getValue()))) return;
+            if (!block.title().equals(String.valueOf(panel.ifN().getValue()))) return;
         } else return;
 
         // Resolve only Bitwig's in-memory source references here, with no filesystem access.
         if (!hasAudio(selection(block.panel()))) return;
-        dBz button = dBz.beI("Edit externally", () -> openSelection(block.panel()));
-        button.zzi("Open the original sample file in your external audio editor");
-        body.IvP(button);
+        dAa button = dAa.cfM("Edit externally", () -> openSelection(block.panel()));
+        button.z3I("Open the original sample file in your external audio editor");
+        body.HL(button);
     }
 
     private static List<?> selection(Object panel) {
-        if (panel instanceof aMo events) return events.UIe().bK_();
-        if (panel instanceof aJf clips) return clips.GKF().bK_();
+        if (panel instanceof aLn events) return events.Vr().bJ_();
+        if (panel instanceof aHZ clips) return clips.Scv().bJ_();
         return List.of();
     }
 
     private static boolean hasAudio(List<?> selected) {
         if (selected.size() != 1) return false;
         Object item = selected.getFirst();
-        if (item instanceof poA || item instanceof DyF) return true;
-        if (item instanceof BVS clip && clip.ZRB() != null) {
-            try (Stream<?> events = clip.ZRB().zzi()) {
-                return events.anyMatch(event -> event instanceof DyF);
+        if (item instanceof ocL || item instanceof TWN) return true;
+        if (item instanceof Ob clip && clip.qoU() != null) {
+            try (Stream<?> events = clip.qoU().z3I()) {
+                return events.anyMatch(event -> event instanceof TWN);
             }
         }
         return false;
@@ -89,15 +89,15 @@ public final class ExternalAudioEditor implements InspectorProvider {
     }
 
     private static void collect(Object item, List<File> files) throws IOException {
-        if (item instanceof poA region) {
-            var sample = region.GKF();
-            files.add(sample == null ? null : sample.tWW());
-        } else if (item instanceof DyF event) {
-            try (Stream<?> regions = event.vws()) {
+        if (item instanceof ocL region) {
+            var sample = region.Scv();
+            files.add(sample == null ? null : sample.LaE());
+        } else if (item instanceof TWN event) {
+            try (Stream<?> regions = event.cCk()) {
                 for (var iterator = regions.iterator(); iterator.hasNext();) collect(iterator.next(), files);
             }
-        } else if (item instanceof BVS clip && clip.ZRB() != null) {
-            try (Stream<?> events = clip.ZRB().zzi()) {
+        } else if (item instanceof Ob clip && clip.qoU() != null) {
+            try (Stream<?> events = clip.qoU().z3I()) {
                 for (var iterator = events.iterator(); iterator.hasNext();) collect(iterator.next(), files);
             }
         } else {

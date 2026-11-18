@@ -4,24 +4,43 @@
     "id": "external-audio-editor",
     "name": "Inspector: External Audio Editor",
     "area": "Inspector",
-    "version": "0.1.0-dev.2",
+    "version": "0.1.0-dev.3",
     "author": "Polarity",
     "description": "Open the selected audio clip or event's original sample file in a configurable external editor.",
     "documentation": "readme"
   },
   "built_against": {
-    "bitwig_version": "6.1.7",
+    "bitwig_version": "6.1.4",
     "platform": "windows",
     "architecture": "x64"
   },
+  "targets": {},
+  "hooks": [],
   "requires": [
-    { "id": "inspector-composition-framework", "min_version": "0.3.0-dev.2" },
-    { "id": "preferences-composition-framework", "min_version": "1.0.0" },
-    { "id": "notifications-framework", "min_version": "0.3.0-dev.1" }
+    {
+      "id": "inspector-composition-framework",
+      "min_version": "0.3.0-dev.2"
+    },
+    {
+      "id": "preferences-composition-framework",
+      "min_version": "1.0.0"
+    },
+    {
+      "id": "notifications-framework",
+      "min_version": "0.3.0-dev.1"
+    }
   ],
   "resources": {
-    "readme": { "kind": "file", "path": "README.md", "media_type": "text/markdown" },
-    "editor-dialog": { "kind": "file", "path": "helper.jar", "media_type": "application/java-archive" }
+    "readme": {
+      "kind": "file",
+      "path": "README.md",
+      "media_type": "text/markdown"
+    },
+    "editor-dialog": {
+      "kind": "file",
+      "path": "helper.jar",
+      "media_type": "application/java-archive"
+    }
   },
   "registrations": [
     {

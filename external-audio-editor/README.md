@@ -1,6 +1,6 @@
 # Inspector: External Audio Editor
 
-Status: prerelease, confirmed working by Robert in Bitwig on Windows.
+Status: dev.3 tester build using Bitwig 6.1.4 as Patchbay's reference build.
 
 Opens the original sample used by one selected audio clip or audio event in an
 external editor. Bitwig handles reloading changes saved to that
@@ -45,9 +45,16 @@ wrapper script on macOS/Linux. Windows batch files, shell command strings,
 - Editing a source affects every clip that uses that file. Make a separate copy
   first if an independent edit is needed. External edits are outside Bitwig undo.
 
+## Updating from dev.2
+
+Import the dev.3 ZIP through Patchbay and accept replacement of the installed mod,
+then restart Bitwig. The mod ID and saved editor path stay the same. Dev.2 was
+built against Windows 6.1.7, which the supplied macOS 6.1.7 map cannot translate.
+Dev.3 ports the Java references to the supported Windows 6.1.4 reference build.
+
 ## Compatibility and verification
 
-Built against Bitwig Studio 6.1.7 Windows x64 with Patchbay 0.36.0-dev.16. Requires
+Built against Bitwig Studio 6.1.4 Windows x64 with Patchbay 0.36.0-dev.16. Requires
 **Framework: Inspector** 0.3.0-dev.2, **Framework: Settings** 1.0.0 and
 **Framework: Notifications** 0.3.0-dev.1. Settings 1.0.0 has no text/path control,
 so its configuration dropdown opens a separate, non-modal Java desktop dialog.
@@ -59,10 +66,25 @@ invalid paths and ambiguous sources. A real Windows test executable received the
 sample path unchanged, including spaces, Unicode and shell metacharacters.
 In dev.2, the packaged dialog opened using Bitwig's bundled Java from a headless
 parent process; saving returned the selected path, and closing returned no path.
-Patchbay 0.36.0-dev.16 imported the ZIP and returned `PREPARE_OK` on stock Bitwig
-6.1.7 Windows x64 with all three frameworks (4 mods, 27 transforms).
+Dev.3's dialog and launcher classes are byte-identical to dev.2, and its packaged
+helper passed the command/source tests including a real Windows process launch.
 
-Robert confirmed dev.2 working in Bitwig on Windows. Cross-platform launch
-commands are implemented; macOS and Linux still need live validation. See the
+Dev.3 passed ZIP import, checksums, availability and full offline preparation
+with all three frameworks on these builds:
+
+| Target | Result |
+| --- | --- |
+| Windows 6.1.4 (reference) | `PREPARE_OK` |
+| Windows 6.1.7 | All 29 helper references map; `PREPARE_OK` |
+| macOS 6.1.7 | All 29 helper references map; `PREPARE_OK` |
+
+Both 6.1.7 checks used official map version 2.0.0-dev.11. Each preparation loaded
+4 mods with 27 transforms. The macOS check ran on Windows against the official
+macOS Bitwig JARs; it does not validate a live macOS UI or application launch.
+
+Robert confirmed dev.2 working in Bitwig on Windows. Dev.3 keeps that editor and
+dialog behavior and changes the Bitwig reference names to 6.1.4. Live testing of
+dev.3 in Bitwig remains pending, including the macOS dialog and application launch.
+Linux launch commands are implemented but have not been validated live. See the
 [repository release guide](https://github.com/polarity/bitwig-mods/blob/main/docs/releasing.md)
 for the build and manual acceptance workflow.

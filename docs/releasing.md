@@ -24,8 +24,11 @@ To build Repitch Transpose, pass `--mod repitch-transpose` and point `--bitwig-b
 To build Remember Live Preview, pass `--mod popup-live-preview` and use stock Bitwig Studio 6.1.4 with Patchbay 0.36.0-dev.16 and Settings Framework 1.0.0. Keep its 6.1.4 reference build so the supplied maps can translate it to Windows and macOS 6.1.7. Verify both runtime builds when changing Bitwig references.
 
 To build External Audio Editor, pass `--mod external-audio-editor` and use stock
-Bitwig Studio 6.1.7 with Patchbay 0.36.0-dev.16. Its build file pins Inspector,
-Settings and Notifications. Run the standalone command/source tests with JDK 21+
+Bitwig Studio 6.1.4 with Patchbay 0.36.0-dev.16. Keep its 6.1.4 reference build
+so the supplied maps can translate it to Windows and macOS 6.1.7. Verify package
+availability and offline preparation on both targets after changing Bitwig
+references. Its build file pins Inspector, Settings and Notifications.
+Run the standalone command/source tests with JDK 21+
 by compiling `EditorCommand.java`, `SourceFiles.java` and `test/EditorCommandTest.java`
 from the mod directory into a temporary class directory, then run
 `com.bitwig.mods.externalaudio.EditorCommandTest`. On Windows, compile
