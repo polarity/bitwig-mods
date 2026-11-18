@@ -1,7 +1,7 @@
 package com.bitwig.mods.chordtools;
 
-import bitwig.obf.aNi; // Detail Editor widget
-import bitwig.obf.bjw; // Detail Editor model
+import bitwig.obf.aMh; // Detail Editor widget
+import bitwig.obf.bii; // Detail Editor model
 import bml.actions.ActionProvider;
 import bml.actions.Actions;
 import bml.notifications.Notifications;
@@ -51,9 +51,9 @@ public final class ChordActions implements ActionProvider {
     }
 
     private static void addQuality(Actions actions, String id, String label, ChordQuality quality) {
-        actions.action(ID_PREFIX + id, label).category(CHORD_QUALITIES).bindOn(aNi.class)
+        actions.action(ID_PREFIX + id, label).category(CHORD_QUALITIES).bindOn(aMh.class)
                 .onRun(context -> {
-                    aNi widget = (aNi) context.widget();
+                    aMh widget = (aMh) context.widget();
                     try {
                         List<Note> selection = selectedNotes(widget);
                         var chords = ChordEdit.qualityChords(selection);
@@ -66,7 +66,7 @@ public final class ChordActions implements ActionProvider {
                 });
     }
 
-    private static void resolveRoots(aNi widget, String label, ChordQuality quality, List<Note> selection,
+    private static void resolveRoots(aMh widget, String label, ChordQuality quality, List<Note> selection,
                                      List<ChordEdit.QualityChord> chords, int[] roots, int start) {
         try {
             if (start > 0 && !sameSelection(selection, selectedNotes(widget))) {
@@ -86,7 +86,7 @@ public final class ChordActions implements ActionProvider {
                     roots[index] = root;
                     // Let the first modal finish closing before showing the next, or applying the edit.
                     PianoRoll.later(() -> resolveRoots(widget, label, quality, selection, chords, roots, index + 1));
-                }).MgQ(widget);
+                }).FzB(widget);
                 return;
             }
             ChordEdit.planQuality(label, chords, roots, quality).apply();
@@ -111,11 +111,11 @@ public final class ChordActions implements ActionProvider {
     private static void addEdit(Actions actions, String id, String label, String category, Function<List<Note>, Edit> plan) {
         actions.action(ID_PREFIX + id, label)
                 .category(category)
-                .bindOn(aNi.class)
-                .onRun(context -> run((aNi) context.widget(), label, plan));
+                .bindOn(aMh.class)
+                .onRun(context -> run((aMh) context.widget(), label, plan));
     }
 
-    private static void run(aNi widget, String label, Function<List<Note>, Edit> plan) {
+    private static void run(aMh widget, String label, Function<List<Note>, Edit> plan) {
         try {
             List<Note> notes = selectedNotes(widget);
             if (!notes.isEmpty()) {
@@ -126,13 +126,13 @@ public final class ChordActions implements ActionProvider {
         }
     }
 
-    private static List<Note> selectedNotes(aNi widget) {
-        bjw editor = widget.yAy(); // model of the editor holding the action binding
+    private static List<Note> selectedNotes(aMh widget) {
+        bii editor = widget.Ktv(); // model of the editor holding the action binding
         if (editor == null) {
             return List.of();
         }
         // Read the active selection of this editor, including the time selection if that tool is active.
-        NoteSelection selection = PianoRoll.selection(editor.BBg());
+        NoteSelection selection = PianoRoll.selection(editor.IwV());
         return selection.hasOtherItems() ? List.of() : selection.notes();
     }
 }

@@ -1,47 +1,47 @@
 package com.bitwig.mods.noteintervals;
 
-import bitwig.obf.dXL; // widget layout group
-import bitwig.obf.dvv; // native modal dialog
-import bitwig.obf.dwF; // widget base type
-import bitwig.obf.dwy; // text label
-import bitwig.obf.edN; // message label
-import bitwig.obf.eey; // single-line text editor
-import bitwig.obf.efb; // text editor commit event
+import bitwig.obf.dWb; // widget layout group
+import bitwig.obf.dtX; // native modal dialog
+import bitwig.obf.dve; // widget base type
+import bitwig.obf.duY; // text label
+import bitwig.obf.ecl; // message label
+import bitwig.obf.ecV; // single-line text editor
+import bitwig.obf.edw; // text editor commit event
 import java.util.function.IntConsumer;
 
-final class IntervalDialog extends dvv {
+final class IntervalDialog extends dtX {
     private final IntConsumer onConfirm;
-    private final eey input;
-    private final edN validation;
+    private final ecV input;
+    private final ecl validation;
     private boolean confirmed;
 
     IntervalDialog(String title, IntConsumer onConfirm) {
         this.onConfirm = onConfirm;
-        XhI(); // initialize the modal
-        neH(title); // set the title
-        Bqd(true); // show OK
-        Ml2(true); // show Cancel
+        zqN(); // initialize the modal
+        MJ(title); // set the title
+        BDm(true); // show OK
+        jFL(true); // show Cancel
 
-        input = eey.qVz();
-        validation = edN.beI("Enter a nonzero whole number from -127 to +127.");
+        input = ecV.bB();
+        validation = ecl.cfM("Enter a nonzero whole number from -127 to +127.");
         validation.t_(false); // show validation only after an invalid submission
-        dXL body = dXL.unz(6); // vertical layout
-        body.IvP(dwy.LYs("Semitones (for example, +4 or -3)"));
-        body.IvP(input);
-        body.IvP(validation);
-        BBg((dwF) body); // select the content overload, as in Bitwig's own text dialogs
-        Gef(input); // initial keyboard focus
-        input.BBg(event -> { // the field handles Enter before the modal sees it
-            if (event instanceof efb commit) {
-                confirm(commit.sCA()); // submitted text
+        dWb body = dWb.UNj(6); // vertical layout
+        body.HL(duY.MIO("Semitones (for example, +4 or -3)"));
+        body.HL(input);
+        body.HL(validation);
+        IwV((dve) body); // select the content overload, as in Bitwig's own text dialogs
+        MRY(input); // initial keyboard focus
+        input.IwV(event -> { // the field handles Enter before the modal sees it
+            if (event instanceof edw commit) {
+                confirm(commit.Hnt()); // submitted text
             }
         });
-        I_(); // finish initialization before showing the modal
+        H_(); // finish initialization before showing the modal
     }
 
     @Override
-    public void kf_() { // OK button
-        confirm(input.Iba().ERa()); // current text, including an uncommitted edit
+    public void ke_() { // OK button
+        confirm(input.xlY().NMA()); // current text, including an uncommitted edit
     }
 
     private void confirm(String text) {
@@ -56,7 +56,7 @@ final class IntervalDialog extends dvv {
             return;
         }
         confirmed = true;
-        super.kf_(); // close before editing the notes
+        super.ke_(); // close before editing the notes
         onConfirm.accept(semitones);
     }
 

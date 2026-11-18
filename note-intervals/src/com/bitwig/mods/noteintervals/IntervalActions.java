@@ -1,7 +1,7 @@
 package com.bitwig.mods.noteintervals;
 
-import bitwig.obf.aNi; // Detail Editor widget
-import bitwig.obf.bjw; // Detail Editor model
+import bitwig.obf.aMh; // Detail Editor widget
+import bitwig.obf.bii; // Detail Editor model
 import bml.actions.ActionProvider;
 import bml.actions.Actions;
 import bml.notifications.Notifications;
@@ -62,30 +62,30 @@ public final class IntervalActions implements ActionProvider {
     private static void addEdit(Actions actions, String id, String label, String category, Function<List<Note>, Edit> plan) {
         actions.action(ID_PREFIX + id, label)
                 .category(category)
-                .bindOn(aNi.class)
-                .onRun(context -> run((aNi) context.widget(), label, plan));
+                .bindOn(aMh.class)
+                .onRun(context -> run((aMh) context.widget(), label, plan));
     }
 
     private static void addPrompt(Actions actions, String id, String label, boolean duplicate) {
         actions.action(ID_PREFIX + id, label + "…")
                 .category(duplicate ? DUPLICATION : TRANSPOSITION)
-                .bindOn(aNi.class)
-                .onRun(context -> prompt((aNi) context.widget(), label, duplicate));
+                .bindOn(aMh.class)
+                .onRun(context -> prompt((aMh) context.widget(), label, duplicate));
     }
 
-    private static void prompt(aNi widget, String label, boolean duplicate) {
+    private static void prompt(aMh widget, String label, boolean duplicate) {
         try {
             if (!selectedNotes(widget).isEmpty()) {
                 new IntervalDialog(label, semitones -> run(widget, label,
                         notes -> IntervalEdit.plan(label, notes, semitones, duplicate)))
-                        .MgQ(widget); // show modal
+                        .FzB(widget); // show modal
             }
         } catch (Refused refused) {
             Notifications.toast(label + ": " + refused.getMessage());
         }
     }
 
-    private static void run(aNi widget, String label, Function<List<Note>, Edit> plan) {
+    private static void run(aMh widget, String label, Function<List<Note>, Edit> plan) {
         try {
             List<Note> notes = selectedNotes(widget);
             if (!notes.isEmpty()) {
@@ -96,13 +96,13 @@ public final class IntervalActions implements ActionProvider {
         }
     }
 
-    private static List<Note> selectedNotes(aNi widget) {
-        bjw editor = widget.yAy(); // model of the editor holding the action binding
+    private static List<Note> selectedNotes(aMh widget) {
+        bii editor = widget.Ktv(); // model of the editor holding the action binding
         if (editor == null) {
             return List.of();
         }
         // Read the active selection of this editor, including the time selection if that tool is active.
-        NoteSelection selection = PianoRoll.selection(editor.BBg());
+        NoteSelection selection = PianoRoll.selection(editor.IwV());
         return selection.hasOtherItems() ? List.of() : selection.notes();
     }
 }

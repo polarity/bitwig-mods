@@ -4,13 +4,13 @@
     "id": "note-intervals",
     "name": "Piano Roll: Note Intervals",
     "area": "Piano Roll",
-    "version": "0.1.0-dev.8",
+    "version": "0.1.0-dev.9",
     "author": "Polarity",
     "description": "Assign shortcuts to transpose or duplicate selected notes at fixed or custom intervals.",
     "documentation": "readme"
   },
   "built_against": {
-    "bitwig_version": "6.1.7",
+    "bitwig_version": "6.1.4",
     "platform": "windows",
     "architecture": "x64"
   },

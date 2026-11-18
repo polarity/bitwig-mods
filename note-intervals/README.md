@@ -1,6 +1,6 @@
 # Piano Roll: Note Intervals
 
-Tester build for Bitwig Studio 6.1.7 on Windows x64 with Patchbay 0.36.0-dev.16. Enable Framework: Actions and Menus, Framework: Notifications, and Framework: Piano Roll.
+Tester build for Patchbay 0.36.0-dev.16. Enable Framework: Actions and Menus, Framework: Notifications, and Framework: Piano Roll. The ZIP uses Windows Bitwig Studio 6.1.4 as its reference build so Patchbay can translate it to Windows and macOS 6.1.7. Offline preparation is checked on both 6.1.7 targets. Live testing of this port is pending.
 
 In **Settings → Shortcuts**, assign keys under **Notes: Duplicate by Interval** and **Notes: Transpose by Interval**. Existing assignments carry over when updating the mod. The following Windows shortcuts are suggestions.
 

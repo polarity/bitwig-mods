@@ -44,7 +44,7 @@ with Bitwig's bundled Java, `-Djava.awt.headless=true`, and arguments `<helper.j
 argument and close the dialog. It must report `cancel parent=headless`. Bitwig's
 headless process must never create an AWT/Swing window itself.
 
-To build Note Intervals or Chord Tools, pass `--mod note-intervals` or `--mod chord-tools`, respectively. Use stock Bitwig Studio 6.1.7 and the [Patchbay 0.36.0-dev.16 Windows bundle](https://github.com/shaboogen-dev/Patchbay/releases/tag/0.36.0-dev.16). Each mod declares its framework versions in its build file. [Note Intervals](../note-intervals/build.json) · [Chord Tools](../chord-tools/build.json)
+To build Note Intervals or Chord Tools, pass `--mod note-intervals` or `--mod chord-tools`, respectively. Use stock Bitwig Studio 6.1.4 and the [Patchbay 0.36.0-dev.16 Windows bundle](https://github.com/shaboogen-dev/Patchbay/releases/tag/0.36.0-dev.16). Keep the 6.1.4 reference build so the supplied maps can translate both mods to Windows and macOS 6.1.7. Verify package availability, helper references, and offline preparation for both targets after changing Bitwig references. Preserve action IDs when porting so assigned shortcuts carry over. Each mod declares its framework versions in its build file. [Note Intervals](../note-intervals/build.json) · [Chord Tools](../chord-tools/build.json)
 
 The builder generates one versioned ZIP per mod in `dist/`. Use `--out` to choose a fresh folder for a repeat build. Each ZIP includes the compiled helper, generated manifest, sources and checksums. Use **Mods → Add Mod…** in Patchbay to import the ZIP.
 
