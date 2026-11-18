@@ -1,6 +1,6 @@
 # Browser: Remember Live Preview
 
-Tester build for Bitwig Studio 6.1.7 on Windows x64. Requires Patchbay 0.36.0-dev.14 and its **Framework: Settings** 1.0.0.
+Tester build using Bitwig Studio 6.1.4 on Windows x64 as Patchbay's reference build. Requires Patchbay 0.36.0-dev.16 and its **Framework: Settings** 1.0.0. Patchbay translates this build for Bitwig 6.1.7 on Windows and macOS using its supplied maps.
 
 Import the ZIP through **Mods → Add Mod…** in Patchbay, enable the mod and its framework, and click **Load**.
 
@@ -15,6 +15,14 @@ In Bitwig, open **Settings → Mods → Pop-up Browser → Live Preview**.
 | Open with preview off | Starts each popup with Live Preview off. The checkbox still works for the current popup. |
 
 The dropdown applies to the next popup. The mod sets the native preview value before the popup runs its initial query. It applies to popup contexts with a Live Preview checkbox.
+
+## Updating from dev.1
+
+Import the dev.2 ZIP and accept replacement of the installed mod. Its ID and saved settings stay the same. Dev.1 was built against Windows 6.1.7, which the supplied macOS 6.1.7 map cannot translate. Dev.2 uses the supported 6.1.4 reference build.
+
+## Validation
+
+Dev.2 passed Patchbay import, checksums, availability and offline preparation for Windows 6.1.4, Windows 6.1.7 and macOS 6.1.7. Tests using the prepared 6.1.7 classes for both platforms verified the three modes, preview off before the first native query, saved state across Java process restarts, and listener cleanup. These checks ran on Windows against the official platform JARs. Live Bitwig testing of dev.2 on Windows and macOS remains pending.
 
 ## Tester check
 

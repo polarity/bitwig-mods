@@ -4,13 +4,13 @@
     "id": "popup-live-preview",
     "name": "Browser: Remember Live Preview",
     "area": "Browser",
-    "version": "0.1.0-dev.1",
+    "version": "0.1.0-dev.2",
     "author": "Polarity",
     "description": "Remember the Pop-up Browser's Live Preview checkbox or choose a fixed starting state.",
     "documentation": "readme"
   },
   "built_against": {
-    "bitwig_version": "6.1.7",
+    "bitwig_version": "6.1.4",
     "platform": "windows",
     "architecture": "x64"
   },

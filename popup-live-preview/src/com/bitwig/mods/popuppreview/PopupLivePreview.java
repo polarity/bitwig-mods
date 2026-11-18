@@ -3,10 +3,10 @@ package com.bitwig.mods.popuppreview;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
-import bitwig.obf.NVD; // value change listener
-import bitwig.obf.aYL; // popup browsing context
-import bitwig.obf.aYN; // popup browsing session
-import bitwig.obf.lIU; // observable, writable boolean value
+import bitwig.obf.foz; // value change listener
+import bitwig.obf.aXs; // popup browsing context
+import bitwig.obf.aXu; // popup browsing session
+import bitwig.obf.AQw; // observable, writable boolean value
 import bml.api.Arg;
 import bml.api.At;
 import bml.api.Bml;
@@ -24,9 +24,9 @@ public final class PopupLivePreview {
     private static final String LAST_CHOICE_KEY = "last-preview-choice";
 
     // A session owns its listener. All session hooks run on Bitwig's UI thread.
-    private static final Map<aYN, PreviewListener> LISTENERS = new IdentityHashMap<>();
+    private static final Map<aXu, PreviewListener> LISTENERS = new IdentityHashMap<>();
 
-    private record PreviewListener(lIU value, NVD listener) {
+    private record PreviewListener(AQw value, foz listener) {
         void detach() {
             value.removeListener(listener);
         }
@@ -45,14 +45,14 @@ public final class PopupLivePreview {
 
     // Bitwig creates the context's preview value and then calls this method
     // before applying the initial query or publishing the popup session.
-    @Hook(target = aYN.class, method = "Bqk(Z)V", at = At.ENTRY, id = "initialize-live-preview")
-    public static void initialize(@This aYN session, @Arg(0) boolean initialQuery) {
+    @Hook(target = aXu.class, method = "lYc(Z)V", at = At.ENTRY, id = "initialize-live-preview")
+    public static void initialize(@This aXu session, @Arg(0) boolean initialQuery) {
         if (!initialQuery) {
             return;
         }
         try {
-            aYL context = session.Bqk(); // active browsing context
-            lIU preview = context.gNZ(); // the same value bound to Live Preview
+            aXs context = session.lYc(); // active browsing context
+            AQw preview = context.iHb(); // the same value bound to Live Preview
             if (preview == null || !preview.isSettable()) {
                 return;
             }
@@ -69,7 +69,7 @@ public final class PopupLivePreview {
             if (mode == REMEMBER && preview.isObservable()) {
                 // Subscribe after applying the starting state so only subsequent
                 // changes can replace the remembered choice.
-                NVD listener = event -> STORE.putBoolean(LAST_CHOICE_KEY, preview.getBoolValue());
+                foz listener = event -> STORE.putBoolean(LAST_CHOICE_KEY, preview.getBoolValue());
                 preview.addListener(listener);
                 LISTENERS.put(session, new PreviewListener(preview, listener));
             }
@@ -78,17 +78,17 @@ public final class PopupLivePreview {
         }
     }
 
-    @Hook(target = aYN.class, method = "ymo()V", at = At.ENTRY, id = "detach-preview-before-commit")
-    public static void beforeCommit(@This aYN session) {
+    @Hook(target = aXu.class, method = "E3()V", at = At.ENTRY, id = "detach-preview-before-commit")
+    public static void beforeCommit(@This aXu session) {
         detach(session);
     }
 
-    @Hook(target = aYN.class, method = "PJ3()V", at = At.ENTRY, id = "detach-preview-before-dispose")
-    public static void beforeDispose(@This aYN session) {
+    @Hook(target = aXu.class, method = "iHb()V", at = At.ENTRY, id = "detach-preview-before-dispose")
+    public static void beforeDispose(@This aXu session) {
         detach(session);
     }
 
-    private static void detach(aYN session) {
+    private static void detach(aXu session) {
         PreviewListener listener = LISTENERS.remove(session);
         if (listener != null) {
             try {
