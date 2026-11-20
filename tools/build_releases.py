@@ -5,9 +5,12 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import subprocess
 import sys
 import tempfile
 from zipfile import ZipFile
+
+from check_package import check_packages
 
 
 PIANO_ROLL_MODS = ("scale-fold", "step-sequencer")
@@ -19,7 +22,22 @@ WIDGET_CHILD_REMOVERS = {
 }
 
 
-def preflight(mod, bitwig_version, package):
+def preflight(mod, bitwig_version, package, *, jdk_bin=None, bitwig_bin=None, modkit_jar=None, compile_jar=None, patchbay_release=None):
+    if mod == "lock-states":
+        if jdk_bin is None or bitwig_bin is None or modkit_jar is None or patchbay_release is None:
+            raise SystemExit("PREFLIGHT_FAILED lock-states: JDK, Bitwig libraries, mod kit and released Patchbay loader are required")
+        command = [sys.executable, str(Path(__file__).with_name("test_lock_states.py")),
+                   "--jdk-bin", str(jdk_bin), "--bitwig-bin", str(bitwig_bin),
+                   "--package", str(package), "--modkit-jar", str(modkit_jar),
+                   "--patchbay-release", str(patchbay_release)]
+        if compile_jar is not None:
+            command += ["--compile-jar", str(compile_jar)]
+        try:
+            subprocess.run(command, check=True)
+        except subprocess.CalledProcessError:
+            raise SystemExit("PREFLIGHT_FAILED lock-states: packaged state/range/storage regressions failed; ZIP was not released") from None
+        print("PREFLIGHT_OK lock-states: packaged capture, recall, note sequences, native ranges and document persistence", flush=True)
+        return
     if mod not in PIANO_ROLL_MODS:
         return
 
@@ -51,8 +69,10 @@ def main():
     for option in ("patchbay-source", "patchbay-release", "bitwig-bin", "jdk-bin"):
         parser.add_argument("--" + option, required=True, type=Path)
     parser.add_argument("--out", type=Path, default=Path("dist"))
+    parser.add_argument("--verification-runtime", type=Path,
+                        help="A Bitwig jre folder for offline preparation when --bitwig-bin has no jre next to it")
     parser.add_argument(
-        "--mod", choices=(*PIANO_ROLL_MODS, "repitch-transpose", "popup-live-preview", "note-intervals", "chord-tools", "external-audio-editor")
+        "--mod", choices=(*PIANO_ROLL_MODS, "repitch-transpose", "popup-live-preview", "note-intervals", "chord-tools", "external-audio-editor", "lock-states")
     )
     args = parser.parse_args()
     repo = Path(__file__).resolve().parent.parent
@@ -121,7 +141,23 @@ def main():
                 result = build_mod.main()
                 if result:
                     return result
-                preflight(mod, reference_build, staging / package.name)
+                compile_jar = workspace / "compile-cache" / reference_build / f"bitwig{reference_build.replace('.', '')}-compile.jar"
+                preflight(mod, reference_build, staging / package.name, jdk_bin=jdk, bitwig_bin=bitwig,
+                            modkit_jar=kit["bml-modkit.jar"], compile_jar=compile_jar, patchbay_release=release)
+
+            # Lock States' own preflight already imports and prepares its ZIP.
+            unchecked = [staging / package.name for mod, package in packages.items() if mod != "lock-states"]
+            if unchecked:
+                try:
+                    check_packages(unchecked, patchbay_release=release, jdk_bin=jdk, bitwig_bin=bitwig,
+                                   map_directory=release / f"maps/windows-{reference_build}-map1", out=workspace / "package-check",
+                                   verification_runtime=args.verification_runtime)
+                except subprocess.CalledProcessError:
+                    raise SystemExit("PREFLIGHT_FAILED import or offline preparation, see the output above; no ZIP was released") from None
+                except AssertionError as failure:
+                    raise SystemExit(f"PREFLIGHT_FAILED map or Bitwig JAR checksum: {failure}; no ZIP was released") from None
+                print("PREFLIGHT_OK import, checksums, availability and offline preparation: "
+                      + ", ".join(mod for mod in packages if mod != "lock-states"), flush=True)
 
             for package in packages.values():
                 (staging / package.name).rename(package)

@@ -29,6 +29,7 @@ pop-up browser.
 | [Inspector: Repitch Transpose](repitch-transpose/README.md) | Semitone controls for a single Repitch audio event in the Inspector. |
 | [Inspector: External Audio Editor](external-audio-editor/README.md) | Open an audio clip or event's original sample in a configurable external editor. |
 | [Browser: Remember Live Preview](popup-live-preview/README.md) | A saved Live Preview choice or a fixed starting state for the Pop-up Browser. |
+| [Devices: Lock States](lock-states/README.md) | Project-saved native-device states with note assignments, note labels, flexible chain recall and shared parent ownership. [Release 0.1.0](https://github.com/polarity/bitwig-mods/releases/tag/lock-states-v0.1.0). |
 
 ## Install
 

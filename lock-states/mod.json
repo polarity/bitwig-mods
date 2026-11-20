@@ -1,0 +1,27 @@
+{
+  "manifest_version": 2,
+  "mod": {
+    "id": "lock-states",
+    "name": "Devices: Lock States",
+    "area": "Device",
+    "version": "0.1.0",
+    "author": "Polarity",
+    "description": "Capture project-saved states for native device trees and assign them to individual sequencer notes.",
+    "documentation": "readme"
+  },
+  "built_against": { "bitwig_version": "6.1.4", "platform": "windows", "architecture": "x64" },
+  "requires": [
+    { "id": "inspector-composition-framework", "min_version": "0.3.0-dev.2" },
+    { "id": "action-menu-composition-framework", "min_version": "0.8.0-dev.1" },
+    { "id": "notifications-framework", "min_version": "0.3.0-dev.1" },
+    { "id": "piano-roll-framework", "min_version": "0.2.0-dev.1" }
+  ],
+  "resources": {
+    "readme": { "kind": "file", "path": "README.md", "media_type": "text/markdown" },
+    "banks": { "kind": "directory", "path": "banks", "persistence": "preserve" }
+  },
+  "registrations": [
+    { "id": "inspector", "consumer": "inspector-composition-framework", "descriptor": "inspector-blocks.properties", "jar": "helper.jar" },
+    { "id": "actions", "consumer": "action-menu-composition-framework", "descriptor": "actions.properties", "jar": "helper.jar" }
+  ]
+}
