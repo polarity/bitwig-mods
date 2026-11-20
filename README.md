@@ -28,6 +28,7 @@ pop-up browser.
 | [Piano Roll: Chord Tools](chord-tools/README.md) | Assign shortcuts for chord inversions, voicings, and chord quality. |
 | [Inspector: Repitch Transpose](repitch-transpose/README.md) | Semitone controls for a single Repitch audio event in the Inspector. |
 | [Inspector: External Audio Editor](external-audio-editor/README.md) | Open an audio clip or event's original sample in a configurable external editor. |
+| [Audio Clip: Scalpel Stem Separation](scalpel-stems/README.md) | Split songs and drum loops into audio tracks from the arranger menu. [Prerelease 0.1.0-dev.6](https://github.com/polarity/bitwig-mods/releases/tag/scalpel-stems-v0.1.0-dev.6). |
 | [Browser: Remember Live Preview](popup-live-preview/README.md) | A saved Live Preview choice or a fixed starting state for the Pop-up Browser. |
 | [Devices: Lock States](lock-states/README.md) | Project-saved native-device states with note assignments, note labels, flexible chain recall and shared parent ownership. [Release 0.1.0](https://github.com/polarity/bitwig-mods/releases/tag/lock-states-v0.1.0). |
 

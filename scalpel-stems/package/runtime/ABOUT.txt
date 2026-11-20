@@ -1,0 +1,3 @@
+Scalpel Stem Separation stores its portable runtime, model files and generated WAVs here.
+Use Bitwig Studio's File > Collect and Save to copy the WAVs into your project
+before removing this folder.

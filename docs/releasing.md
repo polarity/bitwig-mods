@@ -50,6 +50,68 @@ After building, the builder imports the new ZIPs with the bundle's released load
 
 The builder generates one versioned ZIP per mod in `dist/`. Use `--out` to choose a fresh folder for a repeat build. Each ZIP includes the compiled helper, generated manifest, sources and checksums. Use **Mods → Add Mod…** in Patchbay to import the ZIP.
 
+### Scalpel Stem Separation
+
+Use `--mod scalpel-stems` with stock Windows Bitwig 6.1.4, JDK 25.0.4.1 and
+[Patchbay 0.36.0-dev.16](https://github.com/shaboogen-dev/Patchbay/releases/tag/0.36.0-dev.16)
+for its Actions and Menus 0.8.0-dev.1 build dependency.
+Pass `--dependency-package <audio-analysis-runtime-0.1.0-dev.4.zip>` with the
+[released helper ZIP](https://github.com/shaboogen-dev/Mods/releases/tag/tester-2026-11-14).
+Use the same option with `check_package.py` when checking other Bitwig builds.
+Install the helper first for a manual tester install.
+
+Dev.4 lowers the Actions and Menus requirement to 0.8.0-dev.1. Patchbay
+0.36.0-dev.16 rejected dev.3 with that framework. The same isolated
+installation accepted dev.4 as an update and returned `PREPARE_OK` on
+Windows 6.1.7. Dev.4 also passed the Windows 6.1.4 reference preflight.
+
+Dev.5 adds optional GPU acceleration with the same framework requirement.
+The Windows 6.1.4 reference preflight and a live Windows 6.1.7 session used
+Patchbay 0.36.0-dev.16. The 2.75 GB CUDA PyTorch wheel was installed into a
+temporary test runtime. Bitwig verified it on an RTX 5080 and imported the ten
+combined stems with both models running on CUDA. A missing CUDA DLL in that
+runtime exercised a fresh CPU worker and the seven-track drum import. The
+installed Windows CUDA files occupied 4.42 GB. Native CUDA on Linux and MPS on
+macOS still need live validation.
+
+Dev.6 adds CUDA folder selection. With the installed Patchbay 0.36.0-dev.16 and
+Bitwig 6.1.7 on Windows, the live setup downloaded and unpacked PyTorch in a
+folder with spaces on F: and saved the package path. Both models used that
+installation for the combined import. With the selected installation
+temporarily unavailable, Bitwig imported seven drum tracks using the existing
+CPU runtime. The Windows Bitwig 6.1.4 reference preflight also passed.
+
+The dev.2 ZIP passed import, checksums, availability and `PREPARE_OK` against
+Windows 6.1.4 and against the official Windows, macOS and Linux 6.1.7 JARs and
+Patchbay maps. The macOS and Linux checks ran with a Windows verification JRE
+and the matching stock icon resources.
+
+For the worker smoke test, use the provisioned environment's Python and
+set `PYTHONPATH` to the Helper: Audio Analysis package's `engine` directory.
+Run `scalpel-stems/test/smoke_worker.py --engine <packaged scalpel_stems.py> --runtime <v1 directory>`.
+The fixture runs all three actions' worker modes with the actual models,
+checks stem order, frame counts and drum reconstruction, and checks reuse of
+the song cache and a renamed copy of the drum input. For CUDA, prepend the
+installed CUDA package directory to `PYTHONPATH` and add
+`--accelerator cuda --song-device cuda --drum-device cuda`. For Apple Silicon,
+use `--accelerator mps --song-device mps` and `PYTORCH_ENABLE_MPS_FALLBACK=1`.
+Leaving the expected devices at their CPU defaults checks the no-GPU path.
+
+Windows live testing with portable Patchbay 0.36.0-dev.17 and Bitwig 6.1.7
+covered all three arranger imports at 2.1.1.00, one-step Undo, cancellation
+during MDX23C inference and retry after cancellation.
+
+The dev.2 clean setup test on 2026-11-20 started with an empty portable mod
+runtime. Bitwig downloaded Python, the CPU packages and both models. All
+model file SHA-256 digests matched the bundle manifest. Setup completed in
+237 seconds and the combined action added ten tracks. **Collect and Save**
+with **Collect files outside the project folder** copied all ten generated
+WAVs into the project's `samples/` folder with matching SHA-256 digests.
+The project reopened in stock Bitwig after a process restart with the mod
+cache temporarily moved aside. The project panel listed all stem WAVs, and
+its Missing and External filters were empty. Native macOS and Linux live
+tests remain release checks.
+
 ### Lock States prototype
 
 The first published version is 0.1.0, retaining dev.16's implementation after

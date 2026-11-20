@@ -18,8 +18,15 @@ def frameworks_of(package):
         build = next(name for name in archive.namelist() if name.count("/") == 1 and name.endswith("/build.json"))
         return [dependency.split("@", 1)[0] for dependency in json.loads(archive.read(build)).get("classpath_mods", [])]
 
+def package_identity(package):
+    with ZipFile(package) as archive:
+        manifest = next(name for name in archive.namelist() if name.count("/") == 1 and name.endswith("/mod.json"))
+        mod = json.loads(archive.read(manifest))["mod"]
+        return mod["id"], mod["version"]
 
-def check_packages(packages, *, patchbay_release, jdk_bin, bitwig_bin, map_directory, out, verification_runtime=None):
+
+def check_packages(packages, *, patchbay_release, jdk_bin, bitwig_bin, map_directory, out,
+                   verification_runtime=None, dependency_packages=()):
     """Stages an isolated portable loader in the fresh directory `out`, imports the packages and prepares them.
 
     Returns the staged root, whose loader/mod-runtime holds the prepared helpers. Raises CalledProcessError on failure.
@@ -38,13 +45,20 @@ def check_packages(packages, *, patchbay_release, jdk_bin, bitwig_bin, map_direc
             if (bitwig_bin / filename).is_file():
                 shutil.copy2(bitwig_bin / filename, staged_bin / filename)
         shutil.copytree(verification_runtime, root / "bitwig/jre")
+        resources = bitwig_bin.parent / "resources"
+        if resources.is_dir():
+            shutil.copytree(resources, root / "bitwig/resources")
     for name in ("app", "tools", "api", "diagnostics"):
         shutil.copytree(patchbay_release / "loader" / name, root / "loader" / name)
     shutil.copytree(map_directory, root / "maps" / map_directory.name)
     (root / "config").mkdir()
     (root / "config/portable").touch()
     (root / "mods").mkdir()
-    frameworks = sorted({framework for package in packages for framework in frameworks_of(package)})
+    packages = [*dependency_packages, *packages]
+    package_ids = {package_identity(package)[0] for package in packages}
+    if len(package_ids) != len(packages):
+        raise ValueError("Multiple ZIPs supply the same mod")
+    frameworks = sorted({framework for package in packages for framework in frameworks_of(package)} - package_ids)
     for name in frameworks:
         shutil.copytree(patchbay_release / "mods" / name, root / "mods" / name)
     suffix = ".exe" if os.name == "nt" else ""
@@ -70,13 +84,16 @@ def check_packages(packages, *, patchbay_release, jdk_bin, bitwig_bin, map_direc
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--package", type=Path, required=True, action="append", help="Repeat to check several ZIPs together")
+    parser.add_argument("--dependency-package", type=Path, action="append", default=[],
+                        help="Import an external dependency ZIP before checking the mod")
     for name in ("patchbay-release", "jdk-bin", "bitwig-bin", "map-directory", "out"):
         parser.add_argument("--" + name, type=Path, required=True)
     parser.add_argument("--verification-runtime", type=Path,
                         help="Stage the target JARs with a runtime executable on this host for cross-platform offline checks")
     args = parser.parse_args()
     root = check_packages(args.package, patchbay_release=args.patchbay_release, jdk_bin=args.jdk_bin, bitwig_bin=args.bitwig_bin,
-                          map_directory=args.map_directory, out=args.out, verification_runtime=args.verification_runtime)
+                          map_directory=args.map_directory, out=args.out, verification_runtime=args.verification_runtime,
+                          dependency_packages=args.dependency_package)
     print("PACKAGE_OK", root, flush=True)
 
 

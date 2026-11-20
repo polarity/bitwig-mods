@@ -10,7 +10,7 @@ import sys
 import tempfile
 from zipfile import ZipFile
 
-from check_package import check_packages
+from check_package import check_packages, package_identity
 
 
 PIANO_ROLL_MODS = ("scale-fold", "step-sequencer")
@@ -71,8 +71,11 @@ def main():
     parser.add_argument("--out", type=Path, default=Path("dist"))
     parser.add_argument("--verification-runtime", type=Path,
                         help="A Bitwig jre folder for offline preparation when --bitwig-bin has no jre next to it")
+    parser.add_argument("--dependency-package", type=Path, action="append", default=[],
+                        help="Use a released dependency ZIP outside the bundled frameworks")
     parser.add_argument(
-        "--mod", choices=(*PIANO_ROLL_MODS, "repitch-transpose", "popup-live-preview", "note-intervals", "chord-tools", "external-audio-editor", "lock-states")
+        "--mod", choices=(*PIANO_ROLL_MODS, "repitch-transpose", "popup-live-preview", "note-intervals", "chord-tools",
+                          "external-audio-editor", "lock-states", "scalpel-stems")
     )
     args = parser.parse_args()
     repo = Path(__file__).resolve().parent.parent
@@ -83,6 +86,12 @@ def main():
         )
     )
     mods = (args.mod,) if args.mod else PIANO_ROLL_MODS
+    external = {}
+    for path in args.dependency_package:
+        mod_id, version = package_identity(path)
+        if mod_id in external:
+            parser.error(f"multiple --dependency-package ZIPs supply {mod_id}")
+        external[mod_id] = (version, path.resolve())
     reference_build = None
     framework_jars = {}
     packages = {}
@@ -99,7 +108,14 @@ def main():
         build = json.loads((repo / mod / "build.json").read_text(encoding="utf-8"))
         for dependency in build.get("classpath_mods", []):
             framework_id, expected_version = dependency.split("@", 1)
+            if framework_id in external:
+                version, zip_path = external[framework_id]
+                if version != expected_version:
+                    parser.error(f"{mod} expects {dependency}; {zip_path.name} contains {framework_id}@{version}")
+                continue
             framework = release / "mods" / framework_id
+            if not (framework / "mod.json").is_file():
+                parser.error(f"{mod} expects {dependency}; supply its release with --dependency-package")
             actual_version = json.loads((framework / "mod.json").read_text(encoding="utf-8"))["mod"]["version"]
             if actual_version != expected_version:
                 parser.error(f"{mod} expects {dependency}; the Patchbay bundle has {framework_id}@{actual_version}")
@@ -126,12 +142,22 @@ def main():
         build_mod.modkit.CACHE = workspace / "compile-cache"
         build_mod.modkit.ensure = lambda: kit
         release_member = build_mod.release_member
+        mod_dir = build_mod.ws.mod_dir
+
+        def source_dir(mod_id):
+            if mod_id in external:
+                return workspace / "external" / mod_id
+            return mod_dir(mod_id)
 
         def read_release_member(path, name):
+            mod_id = path.parent.parent.name
+            if mod_id in external and path.parent.parent.parent == workspace / "external":
+                return release_member(external[mod_id][1], name)
             if path.name in framework_jars and name == "helper.jar":
                 return framework_jars[path.name].read_bytes()
             return release_member(path, name)
 
+        build_mod.ws.mod_dir = source_dir
         build_mod.release_member = read_release_member
         out.mkdir(parents=True, exist_ok=True)
         with tempfile.TemporaryDirectory(prefix=".build-", dir=out) as staging_dir:
@@ -151,7 +177,8 @@ def main():
                 try:
                     check_packages(unchecked, patchbay_release=release, jdk_bin=jdk, bitwig_bin=bitwig,
                                    map_directory=release / f"maps/windows-{reference_build}-map1", out=workspace / "package-check",
-                                   verification_runtime=args.verification_runtime)
+                                   verification_runtime=args.verification_runtime,
+                                   dependency_packages=[path for _, path in external.values()])
                 except subprocess.CalledProcessError:
                     raise SystemExit("PREFLIGHT_FAILED import or offline preparation, see the output above; no ZIP was released") from None
                 except AssertionError as failure:

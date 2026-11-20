@@ -1,0 +1,5 @@
+# Filename  SHA-256  Bytes  URL (zero means no fixed length)
+955717e8.safetensors d9fa14133cfcc034a6758923bb3a8ca9f8dfd0b582134643bbf83f72c17576dd 84025440 https://huggingface.co/adefossez/HTDemucs/resolve/cbc8a9b1a87023b7fd74e7b3412e6321c0eab003/955717e8.safetensors
+aufr33-jarredou_DrumSep_model_mdx23c_ep_141_sdr_10.8059.ckpt d2a4aa53eb584d21eead358a4e66d1882ad182911be018f052b5da73be9096d0 437652699 https://github.com/openmirlab/mdxnet-infer/releases/download/weights-drumsep-v1/aufr33-jarredou_DrumSep_model_mdx23c_ep_141_sdr_10.8059.ckpt
+aufr33-jarredou_DrumSep_model_mdx23c_ep_141_sdr_10.8059.yaml 17d1649a227f841165bdb4c11a42082898192a1ea3ceab7e7e0b9293d6589dd6 2417 https://github.com/openmirlab/mdxnet-infer/releases/download/weights-drumsep-v1/aufr33-jarredou_DrumSep_model_mdx23c_ep_141_sdr_10.8059.yaml
+mdxnet-infer-source.zip a6bdcf89acdfeab9abf9e1d5a0297cafa79c6cc570114175d7d5054a84651b4a 6399871 https://codeload.github.com/openmirlab/mdxnet-infer/zip/cb4779eedeca4f55ba498df8e234e2b5f4b90aaf
